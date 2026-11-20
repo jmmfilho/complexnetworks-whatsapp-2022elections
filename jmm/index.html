@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>José Maria Monteiro · Bancos de dados, ciência de dados e desinformação · UFC</title>
+<meta name="description" content="José Maria da Silva Monteiro Filho, professor do Departamento de Computação da UFC: bancos de dados, ciência de dados e o estudo da desinformação em aplicativos de mensagens.">
+<meta name="theme-color" content="#08090d">
+<link rel="icon" href="img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<script src="js/app.js"></script>
+
+<header class="hero">
+  <div class="brilho" style="width:520px;height:520px;background:#7c3aed;left:-160px;top:-120px"></div>
+  <div class="brilho" style="width:420px;height:420px;background:#0ea5e9;right:-100px;bottom:-60px;opacity:.2"></div>
+  <canvas id="grafo" aria-label="Rede de coautoria: cada ponto é um coautor"></canvas>
+  <div class="tip-grafo" id="tipGrafo"></div>
+  <div class="wrap">
+    <span class="pill"><b>UFC</b> Professor · Departamento de Computação</span>
+    <h1>José Maria<br><span class="grad">Monteiro</span></h1>
+    <p class="sub">Pesquisa em <b>bancos de dados</b>, <b>ciência de dados</b> e <b>desinformação em aplicativos de mensagens</b>. Doutor em Informática pela PUC-Rio.</p>
+    <div class="acoes"><a class="btn primario" href="publicacoes.html">Ver publicações →</a><a class="btn sec" href="#pesquisa">Linhas de pesquisa</a></div>
+    <div class="legenda-grafo"><span>rede de coautoria · 1ª colaboração:</span><span><i style="background:var(--f1)"></i>2000–09</span><span><i style="background:var(--f2)"></i>2010–17</span><span><i style="background:var(--f3)"></i>2018–26</span></div>
+  </div>
+  <div class="dica">↖ passe o mouse sobre a rede</div>
+</header>
+
+<div class="wrap">
+  <div class="stats surge" id="stats"></div>
+</div>
+
+<section id="pesquisa">
+  <div class="wrap">
+    <div class="surge">
+      <span class="kicker">Pesquisa</span>
+      <h2 class="titulo">Do núcleo dos SGBDs aos dados que circulam na <span class="grad">sociedade</span>.</h2>
+      <p class="lead">Seis linhas que atravessam 27 anos de produção. As barras mostram as publicações de cada tema por ano, de 2000 a 2026.</p>
+    </div>
+    <div class="bento surge" id="bento"></div>
+  </div>
+</section>
+
+<section id="trajetoria" style="padding-top:40px">
+  <div class="wrap">
+    <div class="surge">
+      <span class="kicker">Trajetória</span>
+      <h2 class="titulo">Três fases, uma linha contínua.</h2>
+    </div>
+    <div class="fases surge" id="fases"></div>
+    <div class="painel surge">
+      <div class="topo"><h3>Publicações por ano</h3><div class="leg"><span><i style="background:var(--f1)"></i>2000–2009</span><span><i style="background:var(--f2)"></i>2010–2017</span><span><i style="background:var(--f3)"></i>2018–2026</span></div></div>
+      <div class="grafico" id="porAno"></div>
+    </div>
+  </div>
+</section>
+
+<section id="rede" style="padding-top:40px">
+  <div class="wrap" style="max-width:1320px">
+    <div class="surge">
+      <span class="kicker">Colaboração</span>
+      <h2 class="titulo"><span id="nCoaut"></span> coautores, em anéis.</h2>
+      <p class="lead">O anel indica a fase da primeira colaboração; o tamanho, as publicações em comum; a cor, quão recente foi a última. Clique em alguém para ver os trabalhos juntos — ou aperte o play.</p>
+    </div>
+    <div class="painel surge" id="redeRadial"></div>
+  </div>
+</section>
+
+<section id="pessoas" style="padding-top:40px">
+  <div class="wrap">
+    <div class="surge">
+      <span class="kicker">Orientação</span>
+      <h2 class="titulo"><span id="nFormados"></span> mestres e doutores formados.</h2>
+      <p class="lead" id="pessoasLead"></p>
+    </div>
+    <div class="pessoas surge" id="listaPessoas"></div>
+    <div class="acoes surge"><a class="btn sec" href="orientacoes.html">Todas as orientações e projetos →</a></div>
+  </div>
+</section>
+
+<section style="padding-top:40px">
+  <div class="wrap">
+    <div class="surge"><span class="kicker">Reconhecimento</span><h2 class="titulo">Prêmios</h2></div>
+    <div class="premios surge" id="premios"></div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="contato surge">
+      <span class="kicker" style="justify-content:center">Contato</span>
+      <h2 style="margin-top:14px">Vamos pesquisar juntos?</h2>
+      <p>Estudantes interessados em mestrado ou doutorado no PPGCC/UFC, iniciação científica ou parcerias de pesquisa podem escrever. Conte seu interesse e envie seu currículo.</p>
+      <div class="acoes"><a class="btn primario" data-email href="#">Enviar e-mail</a><span data-links style="display:contents"></span></div>
+    </div>
+  </div>
+</section>
+
+<script src="data/dados.js"></script>
+<script src="data/academico.js"></script>
+<script src="data/grafo.js"></script>
+<script src="js/grafo.js"></script>
+<script src="js/rede.js"></script>
+<script>
+const S = STATS, A = ACAD, $ = (id) => document.getElementById(id);
+grafoHero($("grafo"), GRAFO, $("tipGrafo"));
+
+const O = A.orientacoes, conc = O.filter((o) => o.situacao === "concluida");
+$("stats").innerHTML = [[S.pubs, "", "publicações desde 2000"], [S.coautores, "", "coautores"], [S.a1a4_recente, "%", "em Qualis A1–A4 desde 2018"], [conc.length, "", "mestres e doutores orientados"]]
+  .map(([v, s, r]) => `<div class="stat"><b data-contar="${v}" data-sufixo="${s}">${v}${s}</b><span>${r}</span></div>`).join("");
+
+// ---- bento de linhas de pesquisa ----
+const LINHAS = [
+  ["Desinformação e mensageria", "grande", "Detecção e monitoramento de desinformação e de quem a espalha em grupos públicos de WhatsApp e Telegram, com PLN, aprendizado de máquina e análise de redes.", ["FakeWhatsApp.BR", "Farol Digital", "BATMAN", "Telegram", "eleições"], "#7c3aed"],
+  ["Bancos de dados", "m", "Sintonia automática de SGBDs, bancos de dados em memória e sua recuperação, processamento de consultas e dados em nuvem.", ["self-tuning", "in-memory", "SIGMOD", "VLDB J."], "#2563eb"],
+  ["Engenharia de software", "m", "Qualidade de modelos de features em linhas de produto, code smells e predição de classes propensas a mudanças.", ["DSPL", "code smells"], "#0891b2"],
+  ["Ciência de dados e IA", "m", "Aprendizado de máquina para fraude fiscal, sinais biomédicos, predição de falhas e visão computacional.", ["fraude", "ECG", "deep learning"], "#059669"],
+  ["Privacidade e LGPD", "m", "Privacidade de dados em nuvem, privacidade diferencial e adequação de bancos de dados e pipelines à LGPD.", ["LGPD", "privacidade diferencial"], "#d97706"],
+  ["Segurança de software", "m", "Vulnerabilidades em C/C++, ferramentas SAST, pentest e LLMs aplicados a relatórios de segurança.", ["SAST", "OSINT", "LLMs"], "#dc2626"],
+];
+function spark(tema, alto) {
+  const anos = []; for (let a = S.ano_min; a <= S.ano_max; a++) anos.push(a);
+  const v = anos.map((a) => PUBS.filter((p) => p.tema === tema && p.ano === a).length), max = Math.max(4, ...v), W = 270, H = alto ? 120 : 54, bw = W / anos.length;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${v.map((n, i) => `<rect x="${i * bw + 1}" y="${H - (n / max) * H}" width="${bw - 2}" height="${(n / max) * H || 0}" rx="1.5" fill="url(#g${tema.length})"/>
+    <rect x="${i * bw}" y="${H - 2}" width="${bw - 2}" height="1" fill="rgba(255,255,255,.08)"/>`).join("")}
+    <defs><linearGradient id="g${tema.length}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#6366f1" stop-opacity=".5"/></linearGradient></defs></svg>`;
+}
+$("bento").innerHTML = LINHAS.map(([t, tam, d, tags, cor]) => {
+  const ps = PUBS.filter((p) => p.tema === t), anos = ps.map((p) => p.ano);
+  return `<div class="card ${tam}" title="${ps.length} publicações">
+    <div class="halo" style="background:${cor}"></div>
+    <div>${tam === "grande" ? `<div class="num">${ps.length}</div><div class="mono" style="color:var(--texto-3);font-size:12px;margin:4px 0 18px">publicações · ${Math.min(...anos)}–${Math.max(...anos)}</div>` : ""}
+    <h3>${t}</h3><p>${d}</p><div style="margin-top:14px">${tags.map((g) => `<span class="tag">${g}</span>`).join("")}</div></div>
+    <div><div class="spark">${spark(t, tam === "grande")}</div>${tam !== "grande" ? `<div class="meta"><span>${ps.length} publicações</span><span>${Math.min(...anos)}–${Math.max(...anos)}</span></div>` : ""}</div></div>`;
+}).join("");
+
+// ---- fases ----
+const TXT = [
+  ["Concorrência e sintonia", "Mestrado na UFC sobre controle de concorrência em ambientes móveis de broadcast; doutorado na PUC-Rio sobre manutenção automática do projeto físico de bancos de dados. Prêmio de melhor artigo do SBBD em 2009."],
+  ["Nuvem, web de dados e software", "Professor do DC/UFC. Sintonia de bancos de dados em nuvem, mapeamentos R2RML e visões RDF, qualidade de linhas de produto de software. Best Demo no SBBD em 2015 e 2017."],
+  ["Dados e sociedade", "Desinformação em WhatsApp e Telegram, extrema direita, LGPD, segurança de software e recuperação de bancos de dados em memória (EDBT, SIGMOD, VLDB Journal). Best Poster no ICEIS 2023."],
+];
+$("fases").innerHTML = S.fases.map((f, i) => `<div class="fase" style="--c:${COR_FASE[i]}"><div><span class="anos">${f.ini} — ${f.fim}</span>
+  <h3>${TXT[i][0]}</h3><p>${TXT[i][1]}</p>
+  <div class="nums"><div><b>${f.n}</b><span>publicações</span></div><div><b>${f.a1a4}%</b><span>A1–A4</span></div><div><b>${f.media_coaut.toString().replace(".", ",")}</b><span>coautores/artigo</span></div></div></div></div>`).join("");
+
+// ---- publicações por ano ----
+(() => {
+  const box = $("porAno"), tip = tooltip(box), anos = [];
+  for (let a = S.ano_min; a <= S.ano_max; a++) anos.push(a);
+  const cont = anos.map((a) => PUBS.filter((p) => p.ano === a)), max = Math.max(...cont.map((c) => c.length));
+  const W = 1100, H = 240, b = 26, bw = (W - 20) / anos.length;
+  const fase = (a) => S.fases.findIndex((f) => a >= f.ini && a <= f.fim);
+  let s = `<svg viewBox="0 0 ${W} ${H + b}">`;
+  [0, 5, 10].forEach((v) => { const y = H - (v / max) * (H - 20); s += `<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.06)"/><text x="${W}" y="${y - 4}" text-anchor="end" font-size="11" fill="#6b7080" font-family="Geist Mono, monospace">${v}</text>`; });
+  anos.forEach((a, i) => { const n = cont[i].length, h = (n / max) * (H - 20), x = 10 + i * bw;
+    if (n) s += `<rect x="${x + 4}" y="${H - h}" width="${Math.min(24, bw - 8)}" height="${h}" rx="4" fill="${COR_FASE[fase(a)]}"/>`;
+    if (n === max) s += `<text x="${x + 4 + Math.min(24, bw - 8) / 2}" y="${H - h - 8}" text-anchor="middle" font-size="12" fill="#f2f3f7" font-family="Geist, sans-serif">${n}</text>`;
+    if (a % 2 === 0) s += `<text x="${x + 4 + Math.min(24, bw - 8) / 2}" y="${H + 18}" text-anchor="middle" font-size="11" fill="#6b7080" font-family="Geist Mono, monospace">${a}</text>`;
+    s += `<rect data-i="${i}" x="${x}" y="0" width="${bw}" height="${H}" fill="transparent"/>`; });
+  box.innerHTML = s + "</svg>";
+  box.querySelectorAll("[data-i]").forEach((r) => {
+    r.addEventListener("mouseenter", (e) => { const i = +r.dataset.i, ps = cont[i];
+      tip.show(`<b>${anos[i]} · ${ps.length} publicação(ões)</b>${ps.length ? `<ul>${ps.slice(0, 6).map((p) => `<li>${esc(p.titulo.length > 80 ? p.titulo.slice(0, 79) + "…" : p.titulo)}</li>`).join("")}</ul>${ps.length > 6 ? `<span class="m">… e mais ${ps.length - 6}</span>` : ""}` : ""}`, e); });
+    r.addEventListener("mousemove", (e) => tip.move(e)); r.addEventListener("mouseleave", () => tip.hide()); });
+})();
+
+// ---- rede radial ----
+$("nCoaut").textContent = S.coautores;
+redeRadial($("redeRadial"), REDE);
+
+// ---- pessoas ----
+const nD = conc.filter((o) => o.nivel === "Doutorado").length, nM = conc.length - nD, nA = O.filter((o) => o.situacao === "andamento").length;
+$("nFormados").textContent = conc.length;
+$("pessoasLead").textContent = `${nD} doutorados e ${nM} mestrados concluídos como orientador ou coorientador, ${nA} orientações em andamento e mais de ${A.outras.tcc + A.outras.ic} TCCs e iniciações científicas.`;
+const pessoas = document.getElementById("listaPessoas"), tipP = tooltip(pessoas);
+pessoas.innerHTML = conc.sort((a, b) => b.ano - a.ano).map((o, i) => `<span class="pessoa" data-i="${i}"><span class="av" style="background:${COR_FASE[S.fases.findIndex((f) => o.ano >= f.ini && o.ano <= f.fim)]}">${iniciais(o.nome)}</span>${esc(o.nome.split(" ").slice(0, 2).join(" "))} <small>${o.nivel === "Doutorado" ? "Dr." : "M.Sc."} ${o.ano}</small></span>`).join("");
+pessoas.querySelectorAll(".pessoa").forEach((el) => {
+  const o = conc[+el.dataset.i];
+  el.addEventListener("mouseenter", (e) => tipP.show(`<b>${esc(o.nome)}</b><br><span class="m">${o.nivel} · ${o.ano}${o.co ? " · coorientação" : ""}</span><br>${esc(o.titulo)}`, e));
+  el.addEventListener("mousemove", (e) => tipP.move(e)); el.addEventListener("mouseleave", () => tipP.hide());
+});
+
+$("premios").innerHTML = A.premios.map((p) => `<div class="premio"><span class="ano">${p.ano}</span><h4>${esc(p.titulo)}</h4>${p.obra ? `<p>${esc(p.obra)}</p>` : ""}</div>`).join("");
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orientações e projetos · José Maria Monteiro</title>
+<meta name="description" content="Orientações de doutorado e mestrado, projetos de pesquisa, formação e trajetória de José Maria Monteiro (UFC).">
+<meta name="theme-color" content="#08090d">
+<link rel="icon" href="img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<style>
+  .bloco { display: grid; grid-template-columns: 240px 1fr; gap: 40px; padding: 40px 0; border-top: 1px solid var(--borda); }
+  .bloco h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+  .bloco h2 small { display: block; font-family: var(--mono); font-size: 12px; color: var(--texto-3); font-weight: 400; margin-top: 6px; }
+  .it { display: grid; grid-template-columns: 70px 1fr; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--borda); }
+  .it:last-child { border-bottom: 0; }
+  .it .a { font-family: var(--mono); font-size: 13px; color: var(--texto-3); padding-top: 2px; }
+  .it .t { font-weight: 500; letter-spacing: -.01em; }
+  .it .p { font-size: 13px; color: var(--texto-2); margin-top: 3px; }
+  @media (max-width: 760px) { .bloco { grid-template-columns: 1fr; gap: 14px; } }
+</style>
+</head>
+<body>
+<script src="js/app.js"></script>
+<div class="brilho" style="width:520px;height:520px;background:#0ea5e9;right:-200px;top:-200px;position:fixed;opacity:.2"></div>
+<main class="wrap" style="max-width:1040px">
+  <div class="pagina-topo">
+    <span class="kicker">Orientações · projetos · currículo</span>
+    <h1 style="margin-top:16px">Formar gente<br><span class="grad">é pesquisa também.</span></h1>
+  </div>
+  <div class="stats" id="stats" style="margin:40px 0 30px"></div>
+  <p class="contador">Fonte: Currículo Lattes. Inclui orientações e coorientações.</p>
+  <div class="bloco" style="margin-top:30px"><h2>Em andamento</h2><div id="andamento"></div></div>
+  <div class="bloco"><h2>Doutorados<small>concluídos</small></h2><div id="dout"></div></div>
+  <div class="bloco"><h2>Mestrados<small>concluídos</small></h2><div id="mest"></div></div>
+  <div class="bloco"><h2>Projetos de pesquisa</h2><div id="proj"></div></div>
+  <div class="bloco"><h2>Formação</h2><div id="form"></div></div>
+  <div class="bloco"><h2>Trajetória</h2><div id="traj"></div></div>
+  <div class="bloco"><h2>Contato</h2><div><p style="color:var(--texto-2)">Departamento de Computação · Centro de Ciências · Universidade Federal do Ceará<br>Campus do Pici, Bloco 910 · Fortaleza, CE · 60455-760</p>
+    <div class="acoes" style="margin-top:20px"><a class="btn primario" data-email href="#">Enviar e-mail</a><span data-links style="display:contents"></span></div></div></div>
+</main>
+<script src="data/academico.js"></script>
+<script>
+const A = ACAD, O = A.orientacoes, $ = (id) => document.getElementById(id), n = (f) => O.filter(f).length;
+$("stats").innerHTML = [[n((o) => o.situacao === "concluida" && o.nivel === "Doutorado"), "doutorados concluídos"], [n((o) => o.situacao === "concluida" && o.nivel === "Mestrado"), "mestrados concluídos"],
+  [n((o) => o.situacao === "andamento"), "em andamento"], [A.outras.tcc + A.outras.ic, "TCCs e iniciações científicas"]]
+  .map(([v, r]) => `<div class="stat"><b data-contar="${v}">${v}</b><span>${r}</span></div>`).join("");
+const it = (a, t, p) => `<div class="it"><span class="a">${a}</span><div><div class="t">${esc(t)}</div>${p ? `<div class="p">${p}</div>` : ""}</div></div>`;
+const ori = (o) => it(o.ano, o.titulo, `${esc(o.nome)} · ${o.nivel}${o.co ? " · coorientação" : ""}`);
+$("andamento").innerHTML = O.filter((o) => o.situacao === "andamento").sort((a, b) => a.nivel.localeCompare(b.nivel) || b.ano - a.ano).map(ori).join("");
+$("dout").innerHTML = O.filter((o) => o.situacao === "concluida" && o.nivel === "Doutorado").sort((a, b) => b.ano - a.ano).map(ori).join("");
+$("mest").innerHTML = O.filter((o) => o.situacao === "concluida" && o.nivel === "Mestrado").sort((a, b) => b.ano - a.ano).map(ori).join("");
+$("proj").innerHTML = A.projetos.map((p) => it(p.ano, p.titulo)).join("");
+$("form").innerHTML = A.formacao.map((f) => it(f.ano, f.grau, `${esc(f.inst)}${f.orient ? " · orientação de " + esc(f.orient) : ""}${f.tese ? `<br><i>${esc(f.tese)}</i>` : ""}`)).join("");
+$("traj").innerHTML = A.trajetoria.map((t) => it(t.ano, t.cargo, esc(t.inst))).join("");
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publicações · José Maria Monteiro</title>
+<meta name="description" content="Todas as publicações de José Maria Monteiro (UFC), com busca e filtros por tema, tipo e Qualis.">
+<meta name="theme-color" content="#08090d">
+<link rel="icon" href="img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<script src="js/app.js"></script>
+<div class="brilho" style="width:520px;height:520px;background:#7c3aed;left:-200px;top:-200px;position:fixed"></div>
+<main class="wrap" style="max-width:980px">
+  <div class="pagina-topo">
+    <span class="kicker">Publicações</span>
+    <h1 style="margin-top:16px"><span id="total"></span> trabalhos,<br><span class="grad">uma busca.</span></h1>
+  </div>
+  <div class="filtros">
+    <input id="busca" type="search" placeholder="Buscar por título, veículo ou coautor…" aria-label="Buscar">
+    <select id="fTipo" aria-label="Tipo"><option value="">Todos os tipos</option></select>
+    <select id="fQualis" aria-label="Qualis"><option value="">Qualquer Qualis</option><option value="A1A2">A1–A2</option><option value="A1A4">A1–A4</option></select>
+  </div>
+  <div class="chips-filtro" id="chips"></div>
+  <p class="contador" id="contador" style="margin-top:18px"></p>
+  <div class="lista" id="lista"></div>
+</main>
+<script src="data/dados.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+$("total").textContent = PUBS.length;
+[...new Set(PUBS.map((p) => p.tipo))].forEach((t) => $("fTipo").insertAdjacentHTML("beforeend", `<option>${t}</option>`));
+let tema = "";
+$("chips").innerHTML = ["Todos", ...STATS.temas].map((t, i) => `<button class="${i ? "" : "on"}" data-t="${i ? t : ""}">${t}</button>`).join("");
+$("chips").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+  $("chips").querySelectorAll("button").forEach((x) => x.classList.remove("on")); b.classList.add("on"); tema = b.dataset.t; render(); }));
+const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+PUBS.forEach((p) => (p._b = norm([p.titulo, p.veiculo, p.tema, p.tipo, p.qualis, p.ano, ...p.autores].join(" "))));
+function render() {
+  const q = norm($("busca").value.trim()), tp = $("fTipo").value, ql = $("fQualis").value;
+  const ok = PUBS.filter((p) => (!q || q.split(/\s+/).every((w) => p._b.includes(w))) && (!tp || p.tipo === tp) && (!tema || p.tema === tema) &&
+    (!ql || (ql === "A1A2" ? ["A1", "A2"] : ["A1", "A2", "A3", "A4"]).includes(p.qualis)));
+  $("contador").textContent = `${ok.length} de ${PUBS.length} publicações`;
+  $("lista").innerHTML = ok.map((p) => `<article class="pub"><span class="ano">${p.ano}</span><div>
+    <div class="t">${esc(p.titulo)}</div>
+    <div class="d"><span class="dot" style="background:${COR_FASE[p.fase]}"></span>${esc(p.veiculo)}<span class="chip">${p.tipo}</span>${p.qualis ? `<span class="chip q">${p.qualis}</span>` : ""}<span class="chip">${p.tema}</span></div>
+    ${p.autores.length ? `<div class="co">com ${p.autores.map(esc).join(", ")}</div>` : ""}</div></article>`).join("") || `<p class="contador" style="padding:30px 0">Nenhuma publicação encontrada.</p>`;
+}
+["busca", "fTipo", "fQualis"].forEach((id) => $(id).addEventListener("input", render));
+render();
+</script>
+</body>
+</html>
